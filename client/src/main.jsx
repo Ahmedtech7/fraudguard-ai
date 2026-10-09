@@ -13,7 +13,7 @@ function AuthScreen({onLogin}){
  const submit=async e=>{e.preventDefault();setBusy(true);setError('');setNotice('');try{
  if(!supabase)throw Error('Supabase is not configured. Set the VITE_SUPABASE variables in .env.');
  if(mode==='reset'){const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});if(error)throw error;setNotice('If this email is registered, a password reset email has been sent.');}
- else if(mode==='signup'){if(!fullName.trim())throw Error('Please enter your full name.');const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:fullName.trim()}}});if(error)throw error;if(data.session)onLogin(data.session);else setNotice('Account created. Check your inbox to confirm your email, then sign in.');}
+ else if(mode==='signup'){if(!fullName.trim())throw Error('Please enter your full name.');const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:window.location.origin,data:{full_name:fullName.trim()}}});if(error)throw error;if(data.session)onLogin(data.session);else setNotice('Account created. Check your inbox to confirm your email, then sign in.');}
  else{const {data,error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;onLogin(data.session);}
  }catch(err){setError(err.message)}finally{setBusy(false)}};
  return <div className="premium-auth">
